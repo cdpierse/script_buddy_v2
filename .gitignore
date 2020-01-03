@@ -124,3 +124,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 imsdb_scraper/scripts.json
+.vscode
+script_buddy/scripts.json
