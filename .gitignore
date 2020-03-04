@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
+__pycache__
 *.py[cod]
 *$py.class
 
@@ -125,4 +125,4 @@ dmypy.json
 .pyre/
 imsdb_scraper/scripts.json
 .vscode
-script_buddy/scripts.json
+scripts.json

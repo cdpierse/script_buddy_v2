@@ -1,21 +1,25 @@
 import ast
+import csv
 import json
 import re
 import unicodedata
 
 import pandas as pd
 from bs4 import BeautifulSoup
-import csv
 
 
 class Parser:
 
     def __init__(self):
-        self.script_data = Parser.read('scripts.json')
+
+        # scripts.json is over 300mb in size and thus to big for github
+        # please see the readme.md for instructions on how to run the scraper
+        # and generate scripts.json for yourself
+        self.script_data = Parser.read('script_buddy/data/scripts.json')
         self.scene_set = [
             'INT.', 'EXT.', 'I/E.', 'EXTERIOR', 'INTERIOR', 'INSERT' 'CLOSE UP',
             'CLOSE-UP', 'WIDE ANGLE', 'CONTINUED', 'FADE IN',
-            'DISSOLVE TO','CUT-TO', 'CUT TO', 'CUT TO BLACK', 'INTERCUT'
+            'DISSOLVE TO', 'CUT-TO', 'CUT TO', 'CUT TO BLACK', 'INTERCUT'
         ]
         self.dialogue_whitespace = " " * 15
 
@@ -27,6 +31,32 @@ class Parser:
         """
         return df['title'].values, df['script_text'].values
 
+    def getFilmText(self):
+
+        text_instances = []
+        titles, raw_text = self.getScriptText(self.script_data)
+        for text in raw_text:
+            try:
+                soup = BeautifulSoup(text[0], features="lxml")
+                instance = ""
+                for b_tag in soup.findAll("b"):
+                    if not (any(word.isdigit() for word in b_tag.text)):
+                        text_instances.append(
+                            b_tag.text +
+                            b_tag.next_sibling)
+            except:
+                pass
+
+        self.film_text = text_instances
+
+    def writeFilmTextToFile(self, filename=None):
+        if filename is None:
+            filename = 'script_buddy/data/film_text.txt'
+
+        with open(filename, 'w') as f:
+            for item in self.film_text:
+                f.write(item + "\n")
+
     def getFilmDialogue(self, df=None):
 
         def IsDialogue(s):
@@ -34,6 +64,7 @@ class Parser:
                 return True
             else:
                 return False
+
         def isAlphaNum(s):
             if any(letter.isalnum() for letter in s):
                 return True
@@ -44,12 +75,12 @@ class Parser:
             titles, raw_text = self.getScriptText(df)
 
         film_dialogue = {}
-        for title, text in zip(titles,raw_text):
+        for title, text in zip(titles, raw_text):
             try:
-                soup = BeautifulSoup(text[0],features="lxml")
+                soup = BeautifulSoup(text[0], features="lxml")
                 dialogue = []
                 for b_tag in soup.findAll('b'):
-                    sibling_lines  = str(b_tag.next_sibling).splitlines()
+                    sibling_lines = str(b_tag.next_sibling).splitlines()
                     main_string = ""
                     for line in sibling_lines:
                         if IsDialogue(line):
@@ -64,10 +95,10 @@ class Parser:
                     print(f'{title} contains no readable dialogue')
             except:
                 print(f'{title} is a bad title')
-            
+
             if len(dialogue) > 100:
                 film_dialogue[title] = dialogue
-        
+
         return film_dialogue
 
     def getSingleFilmDialogue(self, title):
@@ -100,14 +131,9 @@ class Parser:
         """
         return "".join(ch for ch in string if unicodedata.category(ch)[0] != "C")
 
-    def main(self):
-        pass
 
-
-p = Parser()
-titles = p.getFilmTitles()
-dialogue_dict = p.getFilmDialogue()
-
-with open('mycsvfile.csv','w') as f:
-    w = csv.writer(f)
-    w.writerows(dialogue_dict.items())
+if __name__ == "__main__":
+    p = Parser()
+    titles = p.getFilmTitles()
+    film_text = p.getFilmText()
+    p.writeFilmTextToFile()
