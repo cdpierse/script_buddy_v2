@@ -1,14 +1,16 @@
-import os
-import torch
 import logging
+import os
 import pickle
 
+import torch
+import torch.nn as nn
 import transformers
-from transformers import (GPT2Config, GPT2LMHeadModel, GPT2Tokenizer,
-                          PreTrainedModel, PreTrainedTokenizer)
-
+from ignite.engine import (Events, create_supervised_evaluator,
+                           create_supervised_trainer)
 from torch.utils.data import (DataLoader, Dataset, RandomSampler,
                               SequentialSampler)
+from transformers import (GPT2Config, GPT2LMHeadModel, GPT2PreTrainedModel,
+                          GPT2Tokenizer, PreTrainedModel, PreTrainedTokenizer)
 
 MODEL_CLASSES = {
     "gpt2": (GPT2Config, GPT2LMHeadModel, GPT2Tokenizer),
@@ -36,7 +38,7 @@ class ScriptData(Dataset):
 
         # change if args are added at later point
         cached_features_file = os.path.join(
-            directory, "gpt2" + str(block_size) + "_" + filename)
+            directory, "gpt2" + "_" + str(block_size) + "_" + filename)
 
         if os.path.exists(cached_features_file) and not overwrite_cache:
             logger.info(
@@ -59,12 +61,12 @@ class ScriptData(Dataset):
             for i in range(0, len(tokenized_text) - block_size+1, block_size):
                 self.examples.append(tokenizer.build_inputs_with_special_tokens(
                     tokenized_text[i:i + block_size]))
-            
-            logger.info(f"Saving features into cached file {cached_features_file}")
-            with open(cached_features_file, "wb") as cache:
-                pickle.dump(self.examples, cache, protocol= pickle.HIGHEST_PROTOCOL)
 
-        
+            logger.info(
+                f"Saving features into cached file {cached_features_file}")
+            with open(cached_features_file, "wb") as cache:
+                pickle.dump(self.examples, cache,
+                            protocol=pickle.HIGHEST_PROTOCOL)
 
     def __len__(self):
         return len(self.examples)
@@ -74,4 +76,22 @@ class ScriptData(Dataset):
 
 
 if __name__ == "__main__":
-    sc = ScriptData(GPT2Tokenizer.from_pretrained("gpt2"), file_path=FILE_PATH)
+    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+    model =   GPT2LMHeadModel.from_pretrained('gpt2')
+    
+    model.train()
+    sc = ScriptData(tokenizer,
+                    file_path=FILE_PATH)
+
+    criterion = nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(),lr=3e-5,eps=1e-08)
+    trainer = create_supervised_trainer(model,optimizer,criterion)
+
+    train_loader = DataLoader(dataset=sc, batch_size=64, shuffle=True, num_workers=0)
+
+    trainer.run(train_loader,1)
+
+                
+    # optimizer = tf.keras.optimizers.Adam(learning_rate=3e-5, epsilon=1e-08, clipnorm=1.0)
+    # loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+    # metric = tf.keras.metrics.SparseCategoricalAccuracy('accuracy')
