@@ -5,7 +5,6 @@ import pickle
 import torch
 import torch.nn as nn
 import transformers
-from ignite.engine import Events, create_supervised_evaluator, create_supervised_trainer
 from torch.utils.data import DataLoader, Dataset, RandomSampler, SequentialSampler
 from transformers import (
     GPT2Config,
@@ -75,6 +74,7 @@ class ScriptData(Dataset):
 
             logger.info(f"Saving features into cached file {cached_features_file}")
             with open(cached_features_file, "wb") as cache:
+                
                 pickle.dump(self.examples, cache, protocol=pickle.HIGHEST_PROTOCOL)
 
     def __len__(self):
@@ -89,7 +89,7 @@ if __name__ == "__main__":
     model = GPT2LMHeadModel.from_pretrained("gpt2-medium")
 
     model.train()
-    sc = ScriptData(tokenizer, file_path=FILE_PATH)
+    sc = ScriptData(tokenizer, file_path=FILE_PATH,overwrite_cache=True)
 
     # criterion = nn.CrossEntropyLoss()
     # optimizer = torch.optim.Adam(model.parameters(), lr=3e-5, eps=1e-08)
