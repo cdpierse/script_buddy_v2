@@ -126,3 +126,5 @@ dmypy.json
 imsdb_scraper/scripts.json
 .vscode
 scripts.json
+models
+models/pytorch_model.bin
