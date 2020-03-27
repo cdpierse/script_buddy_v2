@@ -4,6 +4,10 @@ from transformers import GPT2Tokenizer, GPT2LMHeadModel
 import random
 
 def load_model(model_dir=None):
+    """Loads the saved GPT2 model from disk. Returns 
+    a tuple consisting of `(model,tokenizer)`
+    """    
+
     if model_dir is None:
         model_dir = 'models/'
 
@@ -31,7 +35,7 @@ def generate(model, tokenizer, input_text=None, num_samples=1, max_length=1000):
         )
     else:
         output = model.generate(
-            bos_token_id=random.randint(1,30000),
+            bos_token_id=random.randint(1,50000),
             do_sample=True,   
             top_k=50, 
             max_length = max_length,
@@ -46,9 +50,12 @@ def generate(model, tokenizer, input_text=None, num_samples=1, max_length=1000):
         decoded_output.append(tokenizer.decode(
             sample, skip_special_tokens=True))
 
-    print(decoded_output[0])
+    return decoded_output
 
 
 
-model, tokenizer = load_model()
-generate(model, tokenizer,max_length=500)
+if __name__ ==  "__main__":
+    model, tokenizer = load_model()
+    samples = generate(model, tokenizer, max_length=100,num_samples=1)
+    for sample in samples:
+        print(sample)
