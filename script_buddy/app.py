@@ -3,26 +3,36 @@ from utils import load_model, generate
 
 
 # model, tokenizer = load_model()
-
-# sample = generate(model,tokenizer,input_text="          LOCHLAINN looks into DONNACHAS' eyes and feels his erection grow.    ",max_length=600)
-
-st.write("""
-# Script Buddy *v2*
-Film Script Language Generation with GPT2
-***
-
-""")
+@st.cache(allow_output_mutation=True)
+def loader():
+    return load_model()
 
 
-st.text("hello")
+def main():
+    st.write("""
+    # Script Buddy *v2*
+    Film Script Language Generation with GPT2
+    ***
 
-st.sidebar.slider(
-    "Max Script Length (Longer length, slower generation)",
-    50,
-    1000
+    """)
+    model, tokenizer = loader()
+    max_length = st.sidebar.slider(
+        """ # Max Script Length /n 
+        ## (Longer length, slower generation)""",
+        50,
+        1000
     )
+    
+    context = st.sidebar.text_area("Context")
+    if st.sidebar.button("Generate"):
+        if context:
+            sample = generate(model,tokenizer,input_text=context,max_length=max_length)[0]
+        else: 
+            sample = generate(model,tokenizer,max_length=max_length)[0]
+    else:
+        sample = ''
 
-st.sidebar.button("Generate")
-st.sidebar.progress(50)
-st.spinner()
+    st.text(sample)
 
+
+main()
