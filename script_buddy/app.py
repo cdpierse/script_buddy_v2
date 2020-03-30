@@ -1,5 +1,6 @@
 import streamlit as st
 from utils import load_model, generate
+import time
 
 
 # model, tokenizer = load_model()
@@ -9,30 +10,35 @@ def loader():
 
 
 def main():
+    st.title(" Script Buddy *v2*")
     st.write("""
-    # Script Buddy *v2*
     Film Script Language Generation with GPT2
     ***
-
     """)
     model, tokenizer = loader()
     max_length = st.sidebar.slider(
-        """ # Max Script Length /n 
-        ## (Longer length, slower generation)""",
+        """ Max Script Length 
+        (Longer length, slower generation)""",
         50,
         1000
     )
-    
     context = st.sidebar.text_area("Context")
     if st.sidebar.button("Generate"):
+        start_time = time.time()
         if context:
-            sample = generate(model,tokenizer,input_text=context,max_length=max_length)[0]
+            sample = generate(model,tokenizer,input_text=context,max_length=max_length)
         else: 
-            sample = generate(model,tokenizer,max_length=max_length)[0]
-    else:
-        sample = ''
+            sample = generate(model,tokenizer,max_length=max_length)
+            print(sample)
+        end_time = time.time()
 
-    st.text(sample)
+        print(end_time-start_time)
+    else:
+        sample = ['']
+
+    st.text(sample[0])
+    
+    
 
 
 main()

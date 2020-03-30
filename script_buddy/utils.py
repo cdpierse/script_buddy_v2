@@ -22,6 +22,7 @@ def load_model(model_dir=None):
 
 def generate(model, tokenizer, input_text=None, num_samples=1, max_length=1000):
     model.eval()
+    
 
     if input_text:
         input_ids = tokenizer.encode(input_text, return_tensors='pt')
