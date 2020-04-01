@@ -4,6 +4,7 @@ from transformers import GPT2Tokenizer, GPT2LMHeadModel
 import random
 from transformers import AutoModel, AutoTokenizer, AutoModelWithLMHead
 import os
+import json
 
 
 
@@ -17,7 +18,7 @@ def load_model(model_dir=None):
 
     if model_dir is None:
         model_dir = 'models/'
-        is not os.path.isdir(model_dir):
+        if not os.path.isdir(model_dir):
             tokenizer = AutoTokenizer.from_pretrained("cpierse/gpt2_film_scripts")
             model = AutoModelWithLMHead.from_pretrained("cpierse/gpt2_film_scripts")
             return model, tokenizer
@@ -59,10 +60,28 @@ def generate(model, tokenizer, input_text=None, num_samples=1, max_length=1000):
 
     return decoded_output
 
+def update_index():
+    "Updates samples index from which tweets are being generated"
+    with open('counter.json', 'r+') as f:
+        data = json.load(f)
+        data['last_index'] = data['last_index'] + 1 # <--- add `id` value.
+        f.seek(0)        # <--- should reset file position to the beginning.
+        json.dump(data, f, indent=4)
+        f.truncate()     # remove remaining part
+        
+def get_start_index():
+    "Gets the current index of generated samples"
+    with open('counter.json', 'r') as f:
+        data = json.load(f)
+        index = data['last_index'] # <--- add `id` value.
+        return index
 
 
-if __name__ ==  "__main__":
-    model, tokenizer = load_model()
-    samples = generate(model, tokenizer, max_length=100,num_samples=1)
-    for sample in samples:
-        print(sample)
+
+
+# if __name__ ==  "__main__":
+#     model, tokenizer = load_model()
+#     samples = generate(model, tokenizer, max_length=100,num_samples=1)
+#     for sample in samples:
+#         print(sample)
+
