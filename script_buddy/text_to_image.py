@@ -1,10 +1,14 @@
 import PIL
 from PIL import Image, ImageDraw, ImageFont
 from utils import load_model, generate
-
-model, tokenizer = load_model()
+import json
 font = ImageFont.truetype("Courier New.ttf", 65)
-string = generate(model,tokenizer,input_text="       He pulls his loaded gun out", max_length=1000)[0]
+
+
+with open('data/samples.json') as f:
+    scripts = json.load(f)
+string = scripts[10]
+print(string)
 imsize = font.getsize(string) 
 img = Image.open('paper.png')
 
@@ -16,6 +20,4 @@ d.text((5,5), string,(0,0,0),font= font,)
 img.save('script_output.png',quality =100, optimize= True)
 
 
-# def encode(sample : string) -> PIL.Image():
-#     img = Image.new()
 

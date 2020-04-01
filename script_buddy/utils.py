@@ -2,18 +2,25 @@ import transformers
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 import random
+from transformers import AutoModel, AutoTokenizer, AutoModelWithLMHead
+import os
+
+
+
 
 def load_model(model_dir=None):
-    """Loads the saved GPT2 model from disk. Returns 
+    """Loads the saved GPT2 model from disk if the directory exists.
+    Otherwise it will download the model and tokenizer from hugging face.  
+    Returns 
     a tuple consisting of `(model,tokenizer)`
     """    
 
     if model_dir is None:
         model_dir = 'models/'
-
-    device = 'cpu'
-    if torch.cuda.is_available():
-        device = 'cuda'
+        is not os.path.isdir(model_dir):
+            tokenizer = AutoTokenizer.from_pretrained("cpierse/gpt2_film_scripts")
+            model = AutoModelWithLMHead.from_pretrained("cpierse/gpt2_film_scripts")
+            return model, tokenizer
 
     tokenizer = GPT2Tokenizer.from_pretrained(model_dir)
     model = GPT2LMHeadModel.from_pretrained(model_dir)
@@ -23,7 +30,6 @@ def load_model(model_dir=None):
 def generate(model, tokenizer, input_text=None, num_samples=1, max_length=1000):
     model.eval()
     
-
     if input_text:
         input_ids = tokenizer.encode(input_text, return_tensors='pt')
         output = model.generate(
