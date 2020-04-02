@@ -1,29 +1,58 @@
 # import tweepy
 import json
+import time
+
+import gunicorn
 import tweepy
-from utils import update_index, get_start_index
+
 from text_to_image import generate_media
 
-with open('data/generated/samples.json') as f:
+
+def update_index():
+    "Updates samples index from which tweets are being generated"
+    with open('counter.json', 'r+') as f:
+        data = json.load(f)
+        data['last_index'] = data['last_index'] + 1 # <--- add `id` value.
+        f.seek(0)        # <--- should reset file position to the beginning.
+        json.dump(data, f, indent=4)
+        f.truncate()     # remove remaining part
+        
+def get_start_index():
+    "Gets the current index of generated samples"
+    with open('counter.json', 'r') as f:
+        data = json.load(f)
+        index = data['last_index'] # <--- add `id` value.
+        return index
+
+
+with open('data/generated/samples.json','r') as f:
     scripts = json.load(f)
 
-index = get_start_index()
-index = 1342
-
-
-
-generate_media(scripts[index])
-
-with open("env/auth.json","r") as f:
+with open("env/auth.json", "r") as f:
     data = json.load(f)
 
 auth = tweepy.OAuthHandler(data['api_key'], data['api_secret'])
 auth.set_access_token(data['access_token'], data['access_token_secret'])
 
-api = tweepy.API(auth)
+starttime = time.time()
 
-api.update_with_media('images/script_output.jpeg',f"{index}:{scripts[index][:100]}...")
+print("Bot Online")
+
+while True:
+    # index = get_start_index()
+    # update_index()
 
 
+    # try:
+    #     generate_media(scripts[index])
+    #     print("I get here")
+    #     api = tweepy.API(auth)
+    #     api.update_with_media('images/script_output.jpeg',
+    #                           f"{index}:{scripts[index][:100].strip()}...")
+    #     print("Updated twitter with sample of index ", index)
 
-
+    # except BaseException as e:
+    #     print('Something went wrong')
+    #     print(e)
+    print('working still')
+    time.sleep(21_600 - time.time() % 21_600)

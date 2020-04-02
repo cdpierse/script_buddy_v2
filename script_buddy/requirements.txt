@@ -1,0 +1,7 @@
+tweepy==3.8.0
+transformers==2.6.0
+streamlit==0.56.0
+pandas==1.0.1
+gunicorn==20.0.4
+beautifulsoup4==4.8.2
+Pillow==7.1.0

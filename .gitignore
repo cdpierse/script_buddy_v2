@@ -128,3 +128,6 @@ imsdb_scraper/scripts.json
 scripts.json
 models
 models/pytorch_model.bin
+__pycache__
+.ipynb_checkpoints
+.DS_Store
