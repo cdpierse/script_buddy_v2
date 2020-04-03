@@ -6,6 +6,7 @@ import gunicorn
 import tweepy
 
 from text_to_image import generate_media
+import datetime
 
 
 def update_index():
@@ -24,7 +25,6 @@ def get_start_index():
         index = data['last_index'] # <--- add `id` value.
         return index
 
-
 with open('data/generated/samples.json','r') as f:
     scripts = json.load(f)
 
@@ -39,20 +39,19 @@ starttime = time.time()
 print("Bot Online")
 
 while True:
-    # index = get_start_index()
-    # update_index()
+    index = get_start_index()
+    update_index()
 
+    try:
+        generate_media(scripts[index])
+        print("I get here")
+        api = tweepy.API(auth)
+        media =  api.media_upload('images/script_output.jpeg')
+        api.update_status(status=f"{index}:{scripts[index][:100].strip()}...", media_ids=[media.media_id])
+        print("Updated twitter with sample of index ", index)
 
-    # try:
-    #     generate_media(scripts[index])
-    #     print("I get here")
-    #     api = tweepy.API(auth)
-    #     api.update_with_media('images/script_output.jpeg',
-    #                           f"{index}:{scripts[index][:100].strip()}...")
-    #     print("Updated twitter with sample of index ", index)
-
-    # except BaseException as e:
-    #     print('Something went wrong')
-    #     print(e)
+    except BaseException as e:
+        print('Something went wrong')
+        print(e)
     print('working still')
     time.sleep(21_600 - time.time() % 21_600)

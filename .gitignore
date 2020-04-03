@@ -131,3 +131,5 @@ models/pytorch_model.bin
 __pycache__
 .ipynb_checkpoints
 .DS_Store
+script_buddy/requirements.txt
+
