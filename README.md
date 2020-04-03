@@ -1,5 +1,8 @@
 # script_buddy_v2
  Script Buddy v2 is a dialogue completion and creation tool built using film scripts from the world's most popular film scripts. 
+
+
+![Script Buddy APP](script_buddy/images/app.gif)
  
 ## Project Structure 
 - *imsdb_scraper* contains the scrapy spider built to crawl IMSDB.com and download the film script data that is used to train our text generation model. 

@@ -1,7 +1,7 @@
 import streamlit as st
 from utils import load_model, generate
 import time
-
+import json
 
 # model, tokenizer = load_model()
 @st.cache(allow_output_mutation=True)
@@ -28,8 +28,12 @@ def main():
         if context:
             sample = generate(model,tokenizer,input_text=context,max_length=max_length)
         else: 
-            sample = generate(model,tokenizer,max_length=max_length)
+            with open('data/generated/samples.json','r') as f:
+                scripts = json.load(f)
+            sample = [scripts[1342]]
             print(sample)
+            # sample = generate(model,tokenizer,max_length=max_length)
+            
         end_time = time.time()
 
         print(end_time-start_time)
