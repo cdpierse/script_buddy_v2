@@ -1,5 +1,5 @@
 # script_buddy_v2
- Script Buddy v2 is a dialogue completion and creation tool built using film scripts from the world's most popular film scripts. 
+ Script Buddy v2 is a film script text generation tool built using film scripts from the world's most popular film scripts. 
 
 
 ![Script Buddy APP](script_buddy/images/app.gif)
@@ -9,4 +9,12 @@
 
     - To run the scraper change directory to imsdb_scraper with `cd imsdb_scraper`. As I haven't built any pipelines currently to run the scraper and save it's output simply run `scrapy crawl scriptSpider  -o scripts.json -t json` and for now manually move this output file to `script_buddy/data/` and you'll be good to go. 
 
-- *script_buddy* contains the model classes and utility script parsing functions for cleaning up the film scripts to include only action descriptions, scene descriptions, and dialogue. 
+- *script_buddy* contains the model fine tuning notebook, utility script parsing functions, tweepy bot code, and streamlit application code. 
+    - If you'd like to run the streamlit app locally 
+        - clone this repo 
+        - `pip install requirements.txt`
+        - `cd script_buddy`
+        - `streamlit run app.py`
+
+    - This should open an instance of the app for you to experiment with. Running it for the first time may take a 
+    while as the model needs to be downloaded from huggingface's model hub. 

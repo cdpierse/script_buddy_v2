@@ -39,6 +39,4 @@ def main():
     st.text(sample[0])
     
     
-
-
 main()
