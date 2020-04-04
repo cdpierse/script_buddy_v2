@@ -54,4 +54,4 @@ while True:
         print('Something went wrong')
         print(e)
     print('working still')
-    time.sleep(21_600 - time.time() % 21_600)
+    time.sleep(4_600 - time.time() % 4_600)

@@ -12,7 +12,7 @@
 - *script_buddy* contains the model fine tuning notebook, utility script parsing functions, tweepy bot code, and streamlit application code. 
     - If you'd like to run the streamlit app locally 
         - `git clone https://github.com/cdpierse/script_buddy_v2.git` 
-        - `pip install requirements.txt`
+        - `pip install -r requirements.txt`
         - `cd script_buddy`
         - `streamlit run app.py`
 
