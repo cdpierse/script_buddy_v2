@@ -1,6 +1,11 @@
 # script_buddy_v2
  Script Buddy v2 is a film script text generation tool built using film scripts from the world's most popular film scripts. 
 
+ Read more about the project on [Medium](https://towardsdatascience.com/film-script-generation-with-gpt-2-58601b00d371?source=friends_link&sk=934ac3ac7079d34bae215ce9a558986a) 
+
+ I'm also a bot on twitter
+ <blockquote class="twitter-tweet"><p lang="en" dir="ltr">28:orbs to<br> illuminate his face.<br><br> INT. WOODWARD&#39;S APARTMENT - NIGHT<br><br> Jac... <a href="https://t.co/AC7Bf1v6dj">pic.twitter.com/AC7Bf1v6dj</a></p>&mdash; Tales From The Script (@script_buddy) <a href="https://twitter.com/script_buddy/status/1246813191612641280?ref_src=twsrc%5Etfw">April 5, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
+
 
 ![Script Buddy APP](script_buddy/images/app.gif)
  
