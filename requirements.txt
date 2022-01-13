@@ -6,4 +6,4 @@ Scrapy==1.6.0
 transformers==2.6.0
 pandas==1.0.1
 beautifulsoup4==4.8.2
-Pillow==7.1.1
+Pillow==9.0.0
